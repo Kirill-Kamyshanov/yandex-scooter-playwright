@@ -12,7 +12,7 @@ class TestOrder(Application):
     @allure.title("Оформление заказа")
     @pytest.mark.smoke
     @pytest.mark.parametrize("create_button, user_number, rental_duration, color", [
-        # ("top", "1", "трое суток", "black"),
+        ("top", "1", "трое суток", "black"),
         ("bottom", "2", "четверо суток", "gray"),
     ])
     def test_create_order(self, load_test_data, create_button, user_number, rental_duration, color, browser_name):
