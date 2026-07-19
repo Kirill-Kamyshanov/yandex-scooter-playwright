@@ -3,9 +3,12 @@ from playwright.sync_api import Page
 
 from components.home_page.faq_component import FaqComponent
 from pages.base_page import BasePage
+from pages.create_order_page import CreateOrderPage
 
 
 class HomePage(BasePage):
+    YANDEX_REDIRECT_URL = "https://dzen.ru/?yredirect=true"
+
     def __init__(self, page: Page):
         super().__init__(page)
 
@@ -19,7 +22,7 @@ class HomePage(BasePage):
     def go_to_create_order(self, place: str = "top"):
         button = self.make_order_button_top if place.lower() == "top" else self.make_order_button_bottom
         button.click()
-        self.check_url_contains("https://qa-scooter.praktikum-services.ru/order")
+        self.check_url_contains(CreateOrderPage.PAGE_PATH)
 
     @allure.step("Клик на логотип Яндекса на домашней странице")
     def click_on_yandex_logo(self):
@@ -27,4 +30,4 @@ class HomePage(BasePage):
             self.yandex_logo.click()
         new_tab = tab.value
         new_tab.wait_for_load_state()
-        self.check_url_contains("https://dzen.ru/?yredirect=true", page=new_tab)
+        self.check_url_contains(self.YANDEX_REDIRECT_URL, page=new_tab)

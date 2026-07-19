@@ -1,6 +1,7 @@
-from datetime import datetime, date
+from datetime import date
 
 import allure
+import dateparser
 from playwright.sync_api import Page, expect
 
 from components.base_component import BaseComponent
@@ -30,22 +31,21 @@ class RentalDataComponent(BaseComponent):
         self.create_order_button = self.page.locator('//*[text()="Заказать"]').last
 
     @allure.step("Заполнение формы с данными об аренде")
-    def fill_rental_data_form(self, test_data, year: str, month: str, day_num: str, rental_duration: str,
+    def fill_rental_data_form(self, year: str, month: str, day_num: int, rental_duration: str,
                               color: str = None, comment: str = None):
 
         # Выбор даты доставки самоката
         self.select_date_input.click()
 
         #  Валидация на дату в прошлом
-        month_num = test_data["months"][month]
-        selected_date = datetime.strptime(f"{year}-{month_num}-{day_num}", "%Y-%m-%d").date()
+        selected_date = dateparser.parse(f"{year} {month} {day_num}", languages=['ru']).date()
         assert selected_date >= date.today(), f"Выбрана дата в прошлом: {selected_date}, текущая дата: {date.today()}"
 
         while not (self.current_month_area.inner_text().startswith(
                 month) and self.current_month_area.inner_text().endswith(year)):
             self.next_month_button.click()
         self.page.locator(
-            f'[class^="react-datepicker__day react-datepicker__day--0{day_num}"]').last.click()  # день доставки
+            f'//div[contains(@aria-label, "{month[:-1]}") and text()="{day_num}"]').click()  # день доставки
 
         # Выбор срока аренды
         self.rental_time_input.click()
@@ -60,14 +60,13 @@ class RentalDataComponent(BaseComponent):
             self.comment_for_courier_input.fill(comment)
 
     @allure.step("Проверка корректности отображения формы и заполнения её данными об аренде")
-    def check_rental_data_form_is_filled(self, test_data, year: str, month: str, day_num: str, rental_duration: str,
+    def check_rental_data_form_is_filled(self, year: str, month: str, day_num: int, rental_duration: str,
                                          color: str = None, comment: str = None):
 
         expect(self.rental_data_title).to_be_visible()
 
-        month_num = test_data["months"][month]
-
-        expect(self.select_date_input).to_have_value(f"{day_num}.{month_num:02d}.{year}")
+        month_num = dateparser.parse(f"{year} + {month} + {day_num}", languages=['ru']).date().month
+        expect(self.select_date_input).to_have_value(f"{day_num:02d}.{month_num:02d}.{year}")
         expect(self.rental_time_selected_field).to_have_text(rental_duration)
 
         expect(self.scooter_color_text).to_be_visible()

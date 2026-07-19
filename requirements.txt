@@ -5,3 +5,4 @@ pytest-playwright==0.8.0
 pytest-rerunfailures==16.4
 pytest-xdist==3.8.0
 pytest-timeout==2.4.0
+dateparser==1.4.1

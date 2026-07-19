@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 
 
-def date_for_test(days: int = None) -> tuple[int, str, str]:
+def date_for_test(days: int | None = None) -> tuple[int, str, str]:
     """Возвращает раздельную дату для тестов. Принимает число дней от текущей даты"""
     months = {
         "1": "январь",

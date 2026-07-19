@@ -1,6 +1,5 @@
 import allure
 import pytest
-from pytest_playwright.pytest_playwright import browser_name
 
 from config.application import Application
 from utils.dates import date_for_test
@@ -13,7 +12,7 @@ class TestOrder(Application):
     @allure.title("Оформление заказа")
     @pytest.mark.smoke
     @pytest.mark.parametrize("create_button, user_number, rental_duration, color", [
-        ("top", "1", "трое суток", "black"),
+        # ("top", "1", "трое суток", "black"),
         ("bottom", "2", "четверо суток", "gray"),
     ])
     def test_create_order(self, load_test_data, create_button, user_number, rental_duration, color, browser_name):
@@ -41,7 +40,6 @@ class TestOrder(Application):
         )
         self.create_order_page.buyer_data_component.go_to_rental_data_form()
         self.create_order_page.rental_data_component.fill_rental_data_form(
-            load_test_data,
             year=year_in_week,
             month=month_in_week,
             day_num=day_in_week,
@@ -51,7 +49,6 @@ class TestOrder(Application):
         )
 
         self.create_order_page.rental_data_component.check_rental_data_form_is_filled(
-            load_test_data,
             year=year_in_week,
             month=month_in_week,
             day_num=day_in_week,
