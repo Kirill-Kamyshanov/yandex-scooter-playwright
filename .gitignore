@@ -1,2 +1,11 @@
 # IDE
 .idea/
+
+# Cache
+__pycache__/
+
+# Allure
+allure-results/
+
+# Debugging
+sandbox.py
