@@ -5,6 +5,18 @@
 
 ---
 
+## 📦 Запуск тестов в docker-контейнере
+```
+docker-compose up — собрать и запустить тесты
+docker-compose up --build — пересобрать образ и запустить тесты (в случае изменений в коде)
+docker-compose down — остановить контейнеры
+docker-compose run tests --browser chromium — запустить в конкретном браузере (по умолчанию chromium)
+docker-compose run tests --env stage - запустить тесты в конкретном окружении (по умолчанию dev)
+docker-compose run tests -m smoke — запустить smoke-тесты
+```
+
+
+
 ## 📦 Подготовка к запуску
 
 ```bash
