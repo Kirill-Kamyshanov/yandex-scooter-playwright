@@ -1,0 +1,30 @@
+name: UI Tests Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      TARGET_ENV:
+        description: 'Выберите окружение для тестов'
+        required: true
+        default: 'dev'
+        type: choice
+        options: ['dev', 'stage']
+      TEST_TYPE:
+        description: 'Выберите тип тестов (по маркерам)'
+        required: true
+        default: 'all'
+        type: choice
+        options: ['smoke', 'regression', 'all']
+      TEST_FILES:
+        description: 'Список тестов через запятую (оставьте пустым для всех)'
+        required: false
+        type: string
+      BROWSER_LIST:
+        description: 'Браузеры для прогона'
+        required: true
+        default: 'chromium'
+        type: choice
+        options: ['chromium', 'firefox', 'webkit', 'all']
+
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
