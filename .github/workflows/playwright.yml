@@ -79,18 +79,25 @@ jobs:
       - name: 🧪 Сбор списка и запуск тестов
         shell: bash
         run: |
-          TEST_TARGETS="${{ github.event.inputs.TEST_FILES }}"
-          if [ -z "$TEST_TARGETS" ]; then
-            TEST_TARGETS="tests/"
-          else
-            TEST_TARGETS=$(echo $TEST_TARGETS | tr ',' ' ')
-          fi
-          
-          echo "Запуск тестов в ${{ matrix.browser }}..."
-          pytest $TEST_TARGETS -m "${{ github.event.inputs.TEST_TYPE }}" \
-            --env=${{ github.event.inputs.TARGET_ENV }} \
-            --alluredir=./allure-results \
-            -v || echo "⚠️ Тесты завершены (возможно есть упавшие)"
+               TEST_TARGETS="${{ github.event.inputs.TEST_FILES }}"
+               if [ -z "$TEST_TARGETS" ]; then
+               TEST_TARGETS="tests/"
+               else
+               TEST_TARGETS=$(echo $TEST_TARGETS | tr ',' ' ')
+               fi
+               
+               echo "Запуск тестов в ${{ matrix.browser }}..."
+               if [ "$TEST_TYPE" == "all" ]; then
+               pytest $TEST_TARGETS \
+               --env=${{ github.event.inputs.TARGET_ENV }} \
+               --alluredir=./allure-results \
+               -v
+               else
+               pytest $TEST_TARGETS -m "$TEST_TYPE" \
+               --env=${{ github.event.inputs.TARGET_ENV }} \
+               --alluredir=./allure-results \
+               -v
+               fi
 
       - name: 📦 Сохранение результатов
         uses: actions/upload-artifact@v4
