@@ -30,6 +30,7 @@ env:
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
 jobs:
+  # валидация входных параметров
   validate_pipeline_inputs:
     runs-on: ubuntu-latest
     steps:
@@ -39,23 +40,23 @@ jobs:
           echo "Браузеры: ${{ github.event.inputs.BROWSER_LIST }}"
           echo "✅ Параметры проверены — всё ок"
 
+  # Создание динамической матрицы браузеров
+  setup_matrix:
+    needs: validate_pipeline_inputs
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: ⚙️ Настройка матрицы браузеров
+        id: set-matrix
+        run: |
+          if [[ "${{ github.event.inputs.BROWSER_LIST }}" == "all" ]]; then
+            echo 'matrix=["chromium", "firefox", "webkit"]' >> $GITHUB_OUTPUT
+          else
+            echo "matrix=[\"${{ github.event.inputs.BROWSER_LIST }}\"]" >> $GITHUB_OUTPUT
+          fi
 
-setup_matrix:
-  needs: validate_pipeline_inputs
-  runs-on: ubuntu-latest
-  outputs:
-    matrix: ${{ steps.set-matrix.outputs.matrix }}
-  steps:
-    - name: ⚙️ Настройка матрицы браузеров
-      id: set-matrix
-      run: |
-        if [[ "${{ github.event.inputs.BROWSER_LIST }}" == "all" ]]; then
-          echo 'matrix=["chromium", "firefox", "webkit"]' >> $GITHUB_OUTPUT
-        else
-          echo "matrix=[\"${{ github.event.inputs.BROWSER_LIST }}\"]" >> $GITHUB_OUTPUT
-        fi
-
-
+  # Тестирование и сохранение Allure-результатов
   testing:
     needs: setup_matrix
     runs-on: ubuntu-latest
@@ -97,7 +98,7 @@ setup_matrix:
           path: ./allure-results
           retention-days: 5
 
-
+  # Генерация Allure отчёта
   generate_allure_report:
     needs: testing
     runs-on: ubuntu-latest
@@ -120,3 +121,18 @@ setup_matrix:
         uses: actions/upload-pages-artifact@v3
         with:
           path: allure-report
+
+  # публикация отчета на Pages
+  publish_to_pages:
+    needs: generate_allure_report
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 🚀 Деплой на GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
