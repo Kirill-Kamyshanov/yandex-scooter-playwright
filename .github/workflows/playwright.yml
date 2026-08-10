@@ -38,3 +38,19 @@ jobs:
           echo "Окружение: ${{ github.event.inputs.TARGET_ENV }}"
           echo "Браузеры: ${{ github.event.inputs.BROWSER_LIST }}"
           echo "✅ Параметры проверены — всё ок"
+          
+
+setup_matrix:
+    needs: validate_pipeline_inputs
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: ⚙️ Настройка матрицы браузеров
+        id: set-matrix
+        run: |
+          if [[ "${{ github.event.inputs.BROWSER_LIST }}" == "all" ]]; then
+            echo 'matrix=["chromium", "firefox", "webkit"]' >> $GITHUB_OUTPUT
+          else
+            echo "matrix=[\"${{ github.event.inputs.BROWSER_LIST }}\"]" >> $GITHUB_OUTPUT
+          fi
