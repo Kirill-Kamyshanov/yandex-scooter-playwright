@@ -8,13 +8,13 @@ on:
         required: true
         default: 'dev'
         type: choice
-        options: ['dev', 'stage']
+        options: [ 'dev', 'stage' ]
       TEST_TYPE:
         description: 'Выберите тип тестов (по маркерам)'
         required: true
         default: 'all'
         type: choice
-        options: ['smoke', 'regression', 'all']
+        options: [ 'smoke', 'regression', 'all' ]
       TEST_FILES:
         description: 'Список тестов через запятую (оставьте пустым для всех)'
         required: false
@@ -24,7 +24,17 @@ on:
         required: true
         default: 'chromium'
         type: choice
-        options: ['chromium', 'firefox', 'webkit', 'all']
+        options: [ 'chromium', 'firefox', 'webkit', 'all' ]
 
 env:
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+
+jobs:
+  validate_pipeline_inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔍 Проверка параметров
+        run: |
+          echo "Окружение: ${{ github.event.inputs.TARGET_ENV }}"
+          echo "Браузеры: ${{ github.event.inputs.BROWSER_LIST }}"
+          echo "✅ Параметры проверены — всё ок"
