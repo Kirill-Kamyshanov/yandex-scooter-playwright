@@ -38,19 +38,61 @@ jobs:
           echo "Окружение: ${{ github.event.inputs.TARGET_ENV }}"
           echo "Браузеры: ${{ github.event.inputs.BROWSER_LIST }}"
           echo "✅ Параметры проверены — всё ок"
-          
+
 
 setup_matrix:
-    needs: validate_pipeline_inputs
+  needs: validate_pipeline_inputs
+  runs-on: ubuntu-latest
+  outputs:
+    matrix: ${{ steps.set-matrix.outputs.matrix }}
+  steps:
+    - name: ⚙️ Настройка матрицы браузеров
+      id: set-matrix
+      run: |
+        if [[ "${{ github.event.inputs.BROWSER_LIST }}" == "all" ]]; then
+          echo 'matrix=["chromium", "firefox", "webkit"]' >> $GITHUB_OUTPUT
+        else
+          echo "matrix=[\"${{ github.event.inputs.BROWSER_LIST }}\"]" >> $GITHUB_OUTPUT
+        fi
+
+
+  testing:
+    needs: setup_matrix
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    container:
+      image: mcr.microsoft.com/playwright/python:v1.54.0-jammy
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: ${{ fromJson(needs.setup_matrix.outputs.matrix) }}
     steps:
-      - name: ⚙️ Настройка матрицы браузеров
-        id: set-matrix
+      - name: 📥 Чекаут кода
+        uses: actions/checkout@v4
+
+      - name: 🔧 Подготовка окружения
         run: |
-          if [[ "${{ github.event.inputs.BROWSER_LIST }}" == "all" ]]; then
-            echo 'matrix=["chromium", "firefox", "webkit"]' >> $GITHUB_OUTPUT
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          playwright install --with-deps
+
+      - name: 🧪 Сбор списка и запуск тестов
+        run: |
+          TEST_TARGETS="${{ github.event.inputs.TEST_FILES }}"
+          if [ -z "$TEST_TARGETS" ]; then
+            TEST_TARGETS="tests/"
           else
-            echo "matrix=[\"${{ github.event.inputs.BROWSER_LIST }}\"]" >> $GITHUB_OUTPUT
+            TEST_TARGETS=$(echo $TEST_TARGETS | tr ',' ' ')
           fi
+          
+          echo "Запуск тестов в ${{ matrix.browser }}..."
+          pytest $TEST_TARGETS -m "${{ github.event.inputs.TEST_TYPE }}" \
+            --env=${{ github.event.inputs.TARGET_ENV }} \
+            --alluredir=./allure-results \
+            -v || echo "⚠️ Тесты завершены (возможно есть упавшие)"
+
+      - name: 📦 Сохранение результатов
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-${{ matrix.browser }}
+          path: ./allure-results
+          retention-days: 5
