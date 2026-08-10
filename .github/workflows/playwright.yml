@@ -76,18 +76,8 @@ jobs:
           pip install -r requirements.txt
           playwright install --with-deps
 
-
-      - name: 🔍 Проверка структуры проекта
-        run: |
-          echo "Текущая директория: $(pwd)"
-          echo "Содержимое:"
-          ls -la
-          echo "Поиск тестов:"
-          find . -name "test_*.py" -type f | head -20
-        shell: bash
-
-
       - name: 🧪 Сбор списка и запуск тестов
+        shell: bash
         run: |
           TEST_TARGETS="${{ github.event.inputs.TEST_FILES }}"
           if [ -z "$TEST_TARGETS" ]; then
