@@ -1,0 +1,6 @@
+services:
+  tests:
+    build: .
+    command: --env=${ENV:-dev} --browser=${BROWSER:-chromium}
+    volumes:
+      - ./allure-results:/framework/allure-results
