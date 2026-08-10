@@ -96,3 +96,27 @@ setup_matrix:
           name: allure-results-${{ matrix.browser }}
           path: ./allure-results
           retention-days: 5
+
+
+  generate_allure_report:
+    needs: testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Скачивание результатов тестов
+        uses: actions/download-artifact@v4
+        with:
+          pattern: allure-results-*
+          path: allure-results-combined
+          merge-multiple: true
+
+      - name: 📊 Генерация Allure отчёта
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        with:
+          allure_results: allure-results-combined
+          allure_report: allure-report
+
+      - name: 📦 Подготовка к публикации Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: allure-report
