@@ -134,6 +134,7 @@ jobs:
   publish_to_pages:
     needs: generate_allure_report
     runs-on: ubuntu-latest
+    if: always()
     permissions:
       pages: write
       id-token: write
