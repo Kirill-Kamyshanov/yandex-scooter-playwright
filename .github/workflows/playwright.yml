@@ -90,11 +90,13 @@ jobs:
                if [ "${{ github.event.inputs.TEST_TYPE }}" == "all" ]; then
                pytest $TEST_TARGETS \
                --env=${{ github.event.inputs.TARGET_ENV }} \
+               --browser=$GITHUB_OUTPUT \ 
                --alluredir=./allure-results \
                -v
                else
                pytest $TEST_TARGETS -m "${{ github.event.inputs.TEST_TYPE }}" \
                --env=${{ github.event.inputs.TARGET_ENV }} \
+               --browser=$GITHUB_OUTPUT \
                --alluredir=./allure-results \
                -v
                fi
