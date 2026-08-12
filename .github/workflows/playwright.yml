@@ -87,13 +87,13 @@ jobs:
                fi
                
                echo "Запуск тестов в ${{ matrix.browser }}..."
-               if [ "$TEST_TYPE" == "all" ]; then
+               if [ "${{ github.event.inputs.TEST_TYPE }}" == "all" ]; then
                pytest $TEST_TARGETS \
                --env=${{ github.event.inputs.TARGET_ENV }} \
                --alluredir=./allure-results \
                -v
                else
-               pytest $TEST_TARGETS -m "$TEST_TYPE" \
+               pytest $TEST_TARGETS -m "${{ github.event.inputs.TEST_TYPE }}" \
                --env=${{ github.event.inputs.TARGET_ENV }} \
                --alluredir=./allure-results \
                -v

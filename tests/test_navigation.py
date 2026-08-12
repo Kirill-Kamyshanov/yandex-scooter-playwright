@@ -19,4 +19,3 @@ class TestNavigation(Application):
     def test_go_to_create_order_from_home_page(self, button):
         self.home_page.open()
         self.home_page.go_to_create_order(button)
-        assert False
