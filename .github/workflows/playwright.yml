@@ -101,6 +101,7 @@ jobs:
 
       - name: 📦 Сохранение результатов
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: allure-results-${{ matrix.browser }}
           path: ./allure-results
