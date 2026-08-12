@@ -91,13 +91,13 @@ jobs:
                pytest $TEST_TARGETS \
                --env=${{ github.event.inputs.TARGET_ENV }} \
                --alluredir=./allure-results \
-               --browser=${{ matrix.browser }}
+               --browser=${{ matrix.browser }} \
                -v
                else
                pytest $TEST_TARGETS -m "${{ github.event.inputs.TEST_TYPE }}" \
                --env=${{ github.event.inputs.TARGET_ENV }} \
                --alluredir=./allure-results \
-               --browser=${{ matrix.browser }}
+               --browser=${{ matrix.browser }} \
                -v
                fi
 
