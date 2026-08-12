@@ -16,3 +16,4 @@ class TestFaq(Application):
         self.home_page.open()
         self.home_page.faq_component.click_faq_question_button(index)
         self.home_page.faq_component.check_faq_question_text(index, expected_text)
+        assert False

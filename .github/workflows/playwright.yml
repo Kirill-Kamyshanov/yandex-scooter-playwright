@@ -110,6 +110,7 @@ jobs:
   generate_allure_report:
     needs: testing
     runs-on: ubuntu-latest
+    if: always()
     steps:
       - name: 📥 Скачивание результатов тестов
         uses: actions/download-artifact@v4
@@ -120,7 +121,6 @@ jobs:
 
       - name: 📊 Генерация Allure отчёта
         uses: simple-elf/allure-report-action@master
-        if: always()
         with:
           allure_results: allure-results-combined
           allure_report: allure-report
