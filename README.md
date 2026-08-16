@@ -21,10 +21,10 @@ docker-compose run tests -m smoke — запустить smoke-тесты
 
 ```bash
 1. Установка зависимостей
-pip install -r requirements.txt
+uv sync
 
 2. Установка браузеров (Chromium, Firefox, WebKit)
-playwright install
+uv run playwright install
 ```
 
 ## 🚀 Запуск тестов

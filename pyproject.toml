@@ -1,0 +1,39 @@
+[project]
+name = "yandex-scooter-playwright"
+version = "0.1.0"
+description = "UI test framework"
+readme = "README.md"
+authors = [
+    { name = "Kirill-Kamyshanov", email = "nestor10000@mail.ru" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "allure-pytest==2.16.0",
+    "dateparser==1.4.1",
+    "playwright==1.62.0",
+    "pytest==9.1.1",
+    "pytest-playwright==0.8.0",
+    "pytest-rerunfailures==16.4",
+    "pytest-timeout==2.4.0",
+    "pytest-xdist==3.8.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+markers = [
+    "smoke: проверка ключевой функциональности",
+    "regression: все тесты для полной проверки приложения"
+]
+
+addopts = [
+    "--alluredir=allure-results",
+    "-n=3",
+    "--reruns=2",
+    "--reruns-delay=1",
+    "--timeout=60"
+    ]
