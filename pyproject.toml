@@ -38,3 +38,34 @@ addopts = [
     "--reruns-delay=1",
     "--timeout=60"
     ]
+
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["venv", "allure-results", ".pytest_cache"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # Ошибки PEP8 (лишние пробелы, неправильные отступы)
+    "W",    # Предупреждения PEP8 (Лишние пустые строки)
+    "F",    # Неиспользуемые импорты/переменные
+    "I",    # Сортировка импортов
+    "B",    # Потенциальные баги (assert False)
+    "UP",   # Устаревший синтаксис (type вместо isinstanse)
+    "RUF",  # ruff-specific
+    "SIM",  # flake8-simplify
+    "C4",   # flake8-comprehensions
+]
+ignore = [
+    "B008",    # function call in default arg (Pydantic Field)
+    "RUF001",  # cyrillic ambiguous chars (тексты на русском)
+    "RUF002",
+    "RUF003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]  # assert allowed in tests
+
+[tool.ruff.format]
+quote-style = "double"

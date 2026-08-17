@@ -1,5 +1,5 @@
-import pytest
 import allure
+import pytest
 
 from config.application import Application
 
@@ -7,7 +7,6 @@ from config.application import Application
 @pytest.mark.regression
 @allure.feature("FAQ")
 class TestFaq(Application):
-
     @allure.title("Клик на часто задаваемые вопросы")
     @pytest.mark.parametrize("index", ["0", "1", "2", "3", "4", "5", "6", "7"])
     def test_faq(self, index, load_test_data):

@@ -16,7 +16,7 @@ class RentalDataComponent(BaseComponent):
         super().__init__(page)
 
         self.rental_data_title = self.page.locator('//div[text()="Про аренду"]')
-        self.select_date_input = self.page.get_by_placeholder('* Когда привезти самокат')
+        self.select_date_input = self.page.get_by_placeholder("* Когда привезти самокат")
         self.next_month_button = self.page.locator('//*[text()="Next Month"]')
         self.current_month_area = self.page.locator('//div[contains(@class, "current-month")]')
 
@@ -27,25 +27,35 @@ class RentalDataComponent(BaseComponent):
         self.black_color_checkbox = self.page.get_by_role("checkbox", name="чёрный жемчуг")
         self.gray_color_checkbox = self.page.get_by_role("checkbox", name="серая безысходность")
 
-        self.comment_for_courier_input = self.page.get_by_placeholder('Комментарий для курьера')
+        self.comment_for_courier_input = self.page.get_by_placeholder("Комментарий для курьера")
         self.create_order_button = self.page.locator('//*[text()="Заказать"]').last
 
     @allure.step("Заполнение формы с данными об аренде")
-    def fill_rental_data_form(self, year: str, month: str, day_num: int, rental_duration: str,
-                              color: str = None, comment: str = None):
+    def fill_rental_data_form(
+        self,
+        year: str,
+        month: str,
+        day_num: int,
+        rental_duration: str,
+        color: str | None = None,
+        comment: str | None = None,
+    ):
 
         # Выбор даты доставки самоката
         self.select_date_input.click()
 
         #  Валидация на дату в прошлом
-        selected_date = dateparser.parse(f"{year} {month} {day_num}", languages=['ru']).date()
+        selected_date = dateparser.parse(f"{year} {month} {day_num}", languages=["ru"]).date()
         assert selected_date >= date.today(), f"Выбрана дата в прошлом: {selected_date}, текущая дата: {date.today()}"
 
-        while not (self.current_month_area.inner_text().startswith(
-                month) and self.current_month_area.inner_text().endswith(year)):
+        while not (
+            self.current_month_area.inner_text().startswith(month)
+            and self.current_month_area.inner_text().endswith(year)
+        ):
             self.next_month_button.click()
         self.page.locator(
-            f'//div[contains(@aria-label, "{month[:-1]}") and text()="{day_num}"]').click()  # день доставки
+            f'//div[contains(@aria-label, "{month[:-1]}") and text()="{day_num}"]'
+        ).click()  # день доставки
 
         # Выбор срока аренды
         self.rental_time_input.click()
@@ -60,12 +70,19 @@ class RentalDataComponent(BaseComponent):
             self.comment_for_courier_input.fill(comment)
 
     @allure.step("Проверка корректности отображения формы и заполнения её данными об аренде")
-    def check_rental_data_form_is_filled(self, year: str, month: str, day_num: int, rental_duration: str,
-                                         color: str = None, comment: str = None):
+    def check_rental_data_form_is_filled(
+        self,
+        year: str,
+        month: str,
+        day_num: int,
+        rental_duration: str,
+        color: str | None = None,
+        comment: str | None = None,
+    ):
 
         expect(self.rental_data_title).to_be_visible()
 
-        month_num = dateparser.parse(f"{year} + {month} + {day_num}", languages=['ru']).date().month
+        month_num = dateparser.parse(f"{year} + {month} + {day_num}", languages=["ru"]).date().month
         expect(self.select_date_input).to_have_value(f"{day_num:02d}.{month_num:02d}.{year}")
         expect(self.rental_time_selected_field).to_have_text(rental_duration)
 

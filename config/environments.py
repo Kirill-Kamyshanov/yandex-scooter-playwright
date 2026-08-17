@@ -31,20 +31,22 @@ class EnvironmentConfig:
 def load_test_user(environment: Environment, number: str) -> UserData:
     """Подгружает из json-файлов тестовых юзеров"""
     filepath = Path(__file__).parent.parent / "test_data" / f"{environment.value}.json"
-    with open(filepath, "r", encoding="utf-8") as f:
+    with open(filepath, encoding="utf-8") as f:
         data = json.load(f)
         return UserData(**data["test users"][number])
 
 
 environments = {
-    Environment.DEV: EnvironmentConfig(url="https://qa-scooter.praktikum-services.ru/",
-                                       user_1=load_test_user(Environment.DEV, "1"),
-                                       user_2=load_test_user(Environment.DEV, "2")
-                                       ),
-    Environment.STAGE: EnvironmentConfig(url="https://qa-scooter.praktikum-services.ru/",
-                                         user_1=load_test_user(Environment.STAGE, "1"),
-                                         user_2=load_test_user(Environment.STAGE, "2")
-                                         )
+    Environment.DEV: EnvironmentConfig(
+        url="https://qa-scooter.praktikum-services.ru/",
+        user_1=load_test_user(Environment.DEV, "1"),
+        user_2=load_test_user(Environment.DEV, "2"),
+    ),
+    Environment.STAGE: EnvironmentConfig(
+        url="https://qa-scooter.praktikum-services.ru/",
+        user_1=load_test_user(Environment.STAGE, "1"),
+        user_2=load_test_user(Environment.STAGE, "2"),
+    ),
 }
 
 
