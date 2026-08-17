@@ -11,6 +11,7 @@ dependencies = [
     "allure-pytest==2.16.0",
     "dateparser==1.4.1",
     "playwright==1.62.0",
+    "pre-commit>=4.6.2",
     "pytest==9.1.1",
     "pytest-playwright==0.8.0",
     "pytest-rerunfailures==16.4",
@@ -32,7 +33,7 @@ markers = [
 
 addopts = [
     "--alluredir=allure-results",
-#    "-n=3",
+    "-n=3",
     "--reruns=2",
     "--reruns-delay=1",
     "--timeout=60"
