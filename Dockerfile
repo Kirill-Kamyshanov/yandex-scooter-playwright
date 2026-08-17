@@ -1,5 +1,5 @@
-FROM mcr.microsoft.com/playwright/python:v1.61.0
+FROM mcr.microsoft.com/playwright/python:v1.62.0
 WORKDIR /framework
 COPY . .
-RUN pip install -r requirements.txt
-ENTRYPOINT ["pytest", "-sv"]
+RUN pip install uv && uv sync
+ENTRYPOINT ["uv", "run", "pytest", "-sv"]
