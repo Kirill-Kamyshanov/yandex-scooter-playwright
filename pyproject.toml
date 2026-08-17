@@ -1,7 +1,7 @@
 [project]
 name = "yandex-scooter-playwright"
 version = "1.0.0"
-description = "UI test framework"
+description = "UI test framework based on Playwright"
 readme = "README.md"
 authors = [
     { name = "Kirill-Kamyshanov", email = "nestor10000@mail.ru" }
