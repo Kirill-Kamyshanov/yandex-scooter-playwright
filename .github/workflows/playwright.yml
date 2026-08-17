@@ -73,9 +73,9 @@ jobs:
 
       - name: 🔧 Подготовка окружения
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          playwright install --with-deps
+          pip install uv
+          uv sync
+          uv run playwright install --with-deps
 
       - name: 🧪 Сбор списка и запуск тестов
         shell: bash
